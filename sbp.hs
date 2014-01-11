@@ -9,7 +9,7 @@ import Data.Time.LocalTime
 
 import Control.Concurrent (threadDelay)
 
-toMSecs :: Int -> Int
+toMSecs :: Num a => a -> a
 toMSecs = (*) 1000000
 
 sleepUntilMinuteBounary :: IO ()
@@ -35,10 +35,11 @@ loop :: IO ()
 loop = do
   zonedTime <- getZonedTime
   let theTime = show zonedTime
-  putStrLn $ ">>> Running script (" ++ theTime ++ ")"
   fourAm <- isCloseToFourAm
   let delay = if fourAm then 2 else 60
+  putStrLn $ ">>> Waiting " ++ show delay ++ " seconds to run the script (" ++ theTime ++ ")"
   threadDelay $ toMSecs delay
+  putStrLn ">>> Running..."
   exitCode <- system "ruby ./urbanspoon_reservations.rb"
   case exitCode of
     ExitSuccess -> return ()
