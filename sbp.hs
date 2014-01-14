@@ -1,6 +1,7 @@
 #!/usr/bin/runhaskell
 
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE KindSignatures #-}
 
 import System.Cmd (system)
 import System.Exit
@@ -17,7 +18,7 @@ sleepUntilMinuteBounary = do
   zonedTime <- getZonedTime
   let localTime = zonedTimeToLocalTime zonedTime
       localTod = localTimeOfDay localTime
-  let x = 60 - (floor $ todSec localTod)
+  let x = 60 - floor (todSec localTod)
   putStrLn $ ">>> Sleeping " ++ show x ++ " seconds to align with minute boundary..."
   threadDelay $ toMSecs x
   putStrLn "... Done"
@@ -31,8 +32,9 @@ isCloseToFourAm = do
       close = (hour == 3 && minutes >= 59) || (hour == 4 && minutes <= 01)
   return close
 
+iff :: forall (m :: * -> *) a. Monad m => Bool -> m a -> m ()
 iff True x = do { x; return () }
-iff False x = do { return () }
+iff False _ = return ()
 
 loop :: IO ()
 loop = do
