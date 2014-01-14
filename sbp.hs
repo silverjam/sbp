@@ -17,7 +17,7 @@ sleepUntilMinuteBounary = do
   zonedTime <- getZonedTime
   let localTime = zonedTimeToLocalTime zonedTime
       localTod = localTimeOfDay localTime
-  let x = 60 - todMin localTod
+  let x = 60 - (floor $ todSec localTod)
   putStrLn $ ">>> Sleeping " ++ show x ++ " seconds to align with minute boundary..."
   threadDelay $ toMSecs x
   putStrLn "... Done"
@@ -31,11 +31,15 @@ isCloseToFourAm = do
       close = (hour == 3 && minutes >= 59) || (hour == 4 && minutes <= 01)
   return close
 
+iff True x = do { x; return () }
+iff False x = do { return () }
+
 loop :: IO ()
 loop = do
+  fourAm <- isCloseToFourAm
+  iff (not fourAm) sleepUntilMinuteBounary
   zonedTime <- getZonedTime
   let theTime = show zonedTime
-  fourAm <- isCloseToFourAm
   let delay = if fourAm then 2 else 60
   putStrLn $ ">>> Waiting " ++ show delay ++ " seconds to run the script (" ++ theTime ++ ")"
   threadDelay $ toMSecs delay
@@ -49,6 +53,5 @@ loop = do
 
 main :: IO ()
 main = do
-  sleepUntilMinuteBounary
   loop
   exitFailure
