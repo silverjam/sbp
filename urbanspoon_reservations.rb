@@ -3,8 +3,8 @@ require 'mechanize'
 
 FIRST_NAME = 'Jason'
 LAST_NAME = 'Mobarak'
-PHONE = '505-450-8461'
-EMAIL = 'jason.mobarak@gmail.com'
+PHONE = '505-450-XXXX'
+EMAIL = 'jZZZn.mZZZk@gmail.com'
 
 PARTY_SIZE = 2
 SCHEDULE_RANGE = { :start_time => '17:00', :end_time => '22:00' }
